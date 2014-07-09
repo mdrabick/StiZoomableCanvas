@@ -111,7 +111,9 @@ namespace System.Windows.Controls
                 var renderSize = canvas.RenderSize;
                 value = new Rect(offset.X / scale, offset.Y / scale, renderSize.Width / scale, renderSize.Height / scale);
             }
-
+            Console.WriteLine("Rectangle = {0}", value.ToString());
+            Console.WriteLine("Viewbox = {0}", ViewboxProperty);
+            Console.WriteLine("ActualViewbox = {0}", ActualViewboxProperty);
             return value;
         }
 
@@ -146,6 +148,7 @@ namespace System.Windows.Controls
         public Rect ActualViewbox
         {
             get { return (Rect)GetValue(ActualViewboxProperty); }
+            set { SetValue(ActualViewboxProperty, value); }
         }
 
         #endregion
@@ -166,7 +169,11 @@ namespace System.Windows.Controls
         {
             var viewbox = (Rect)value;
             return viewbox.IsEmpty
-                || (viewbox.X.IsBetween(Double.MinValue, Double.MaxValue)
+                //|| (viewbox.X.IsBetween(Double.NegativeInfinity, Double.PositiveInfinity)
+                //&& viewbox.Y.IsBetween(Double.NegativeInfinity, Double.PositiveInfinity)
+                //&& viewbox.Width.IsBetween(Double.Epsilon, Double.PositiveInfinity)
+                //&& viewbox.Height.IsBetween(Double.Epsilon, Double.PositiveInfinity));
+            || (viewbox.X.IsBetween(Double.MinValue, Double.MaxValue)
                 && viewbox.Y.IsBetween(Double.MinValue, Double.MaxValue)
                 && viewbox.Width.IsBetween(Double.Epsilon, Double.MaxValue)
                 && viewbox.Height.IsBetween(Double.Epsilon, Double.MaxValue));
