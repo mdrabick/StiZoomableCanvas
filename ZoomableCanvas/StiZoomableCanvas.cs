@@ -18,6 +18,25 @@ namespace System.Windows.Controls
     /// </summary>
     public class StiZoomableCanvas : VirtualPanel, IScrollInfo
     {
+        #region BoxProperty
+        public static readonly DependencyProperty BoxProperty = DependencyProperty.Register("Box", typeof(Rect), typeof(StiZoomableCanvas),
+                                                            new FrameworkPropertyMetadata(Rect.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnBoxChanged), IsBoxValid);
+        public double Box
+        {
+            get { return (double)GetValue(BoxProperty); }
+            set { SetValue(BoxProperty, value); }
+        }
+        private static bool IsBoxValid(object value)
+        {
+            return true;
+        }
+        private static void OnBoxChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
+
+        #endregion
+
         #region ApplyTransformProperty
 
         /// <summary>
@@ -93,8 +112,9 @@ namespace System.Windows.Controls
         /// <summary>
         /// Identifies the <see cref="ActualViewbox"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty ActualViewboxProperty = DependencyProperty.RegisterReadOnly("ActualViewbox", typeof(Rect), typeof(StiZoomableCanvas), new FrameworkPropertyMetadata(Rect.Empty, OnActualViewboxChanged, CoerceActualViewbox)).DependencyProperty;
-
+        public static readonly DependencyProperty ActualViewboxProperty = DependencyProperty.Register("ActualViewbox", typeof(Rect), typeof(StiZoomableCanvas),
+                                                                            new FrameworkPropertyMetadata(Rect.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnActualViewboxChanged, CoerceActualViewbox));
+       
         /// <summary>
         /// Returns a <see cref="Rect"/> representing the area of the canvas that is currently being displayed.
         /// </summary>
@@ -112,8 +132,9 @@ namespace System.Windows.Controls
                 value = new Rect(offset.X / scale, offset.Y / scale, renderSize.Width / scale, renderSize.Height / scale);
             }
             Console.WriteLine("Rectangle = {0}", value.ToString());
-            Console.WriteLine("Viewbox = {0}", ViewboxProperty);
-            Console.WriteLine("ActualViewbox = {0}", ActualViewboxProperty);
+            Console.WriteLine("ViewboxProp = {0}, Viewbox = {1}", (Rect)canvas.GetValue(ViewboxProperty), canvas.Viewbox);
+            Console.WriteLine("ActualViewboxProp = {0}, ActualViewbox = {1}", (Rect)canvas.GetValue(ActualViewboxProperty), canvas.ActualViewbox);
+            //d.SetValue(BoxProperty, ((Rect)value).X);
             return value;
         }
 
@@ -134,6 +155,7 @@ namespace System.Windows.Controls
             {
                 scrollInfo.ScrollOwner.InvalidateScrollInfo();
             }
+            
         }
 
         /// <summary>
@@ -158,7 +180,8 @@ namespace System.Windows.Controls
         /// <summary>
         /// Identifies the <see cref="Viewbox"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty ViewboxProperty = DependencyProperty.Register("Viewbox", typeof(Rect), typeof(StiZoomableCanvas), new FrameworkPropertyMetadata(Rect.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnViewboxChanged), IsViewboxValid);
+        public static readonly DependencyProperty ViewboxProperty = DependencyProperty.Register("Viewbox", typeof(Rect), typeof(StiZoomableCanvas), 
+                                                                      new FrameworkPropertyMetadata(Rect.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnViewboxChanged), IsViewboxValid);
 
         /// <summary>
         /// Determines whether the value given is a valid value for the <see cref="Viewbox"/> dependency property.
@@ -358,7 +381,8 @@ namespace System.Windows.Controls
         private static void OnOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             d.CoerceValue(ActualViewboxProperty);
-
+            Rect rect = (Rect)d.GetValue(ActualViewboxProperty);
+            d.SetValue(BoxProperty, rect);
             var canvas = d as StiZoomableCanvas;
             if (canvas != null)
             {
@@ -411,7 +435,8 @@ namespace System.Windows.Controls
         /// <summary>
         /// Identifies the <see cref="Scale"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty ScaleProperty = DependencyProperty.Register("Scale", typeof(double), typeof(StiZoomableCanvas), new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnScaleChanged, CoerceScale), IsScaleValid);
+        public static readonly DependencyProperty ScaleProperty = DependencyProperty.Register("Scale", typeof(double), typeof(StiZoomableCanvas), 
+                                                                    new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnScaleChanged, CoerceScale), IsScaleValid);
 
         /// <summary>
         /// Determines whether the value given is a valid value for the <see cref="Scale"/> dependency property.
@@ -479,7 +504,7 @@ namespace System.Windows.Controls
         {
             d.CoerceValue(ActualViewboxProperty);
             d.CoerceValue(OffsetProperty);
-
+            //d.SetValue(BoxProperty, d.GetValue(ActualViewboxProperty));
             var canvas = d as StiZoomableCanvas;
             if (canvas != null)
             {
