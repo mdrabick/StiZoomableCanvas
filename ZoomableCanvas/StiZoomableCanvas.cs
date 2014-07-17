@@ -131,9 +131,9 @@ namespace System.Windows.Controls
                 var renderSize = canvas.RenderSize;
                 value = new Rect(offset.X / scale, offset.Y / scale, renderSize.Width / scale, renderSize.Height / scale);
             }
-            Console.WriteLine("Rectangle = {0}", value.ToString());
-            Console.WriteLine("ViewboxProp = {0}, Viewbox = {1}", (Rect)canvas.GetValue(ViewboxProperty), canvas.Viewbox);
-            Console.WriteLine("ActualViewboxProp = {0}, ActualViewbox = {1}", (Rect)canvas.GetValue(ActualViewboxProperty), canvas.ActualViewbox);
+            //Console.WriteLine("Rectangle = {0}", value.ToString());
+            //Console.WriteLine("ViewboxProp = {0}, Viewbox = {1}", (Rect)canvas.GetValue(ViewboxProperty), canvas.Viewbox);
+            //Console.WriteLine("ActualViewboxProp = {0}, ActualViewbox = {1}", (Rect)canvas.GetValue(ActualViewboxProperty), canvas.ActualViewbox);
             //d.SetValue(BoxProperty, ((Rect)value).X);
             return value;
         }
