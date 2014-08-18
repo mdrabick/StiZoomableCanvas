@@ -900,7 +900,11 @@ namespace System.Windows.Controls
                         _items[i].Index = i - count;
                     }
                 }
-                _items.RemoveRange(index, count);
+                // HACK ($$$) - the position generating logic is returning the wrong position
+                // the position generated for the last item is beyond the bounds of the collection
+                // causing "RemoveRange" to fail 
+                int indexToRemove = (index > _items.Count) ? _items.Count - 1 : index;
+                _items.RemoveRange(indexToRemove, count);
                 _extent = Rect.Empty;
 
                 if (ExtentChanged != null)
@@ -1488,7 +1492,7 @@ namespace System.Windows.Controls
         /// <summary>
         /// Re-computes the <see cref="Extent"/> of items in the canvas and updates the parent scroll viewer if there is one.
         /// </summary>
-        protected void InvalidateExtent()
+        public void InvalidateExtent()
         {
             ComputedExtent = Rect.Empty;
             var owner = ((IScrollInfo)this).ScrollOwner;
