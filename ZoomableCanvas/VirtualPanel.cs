@@ -318,7 +318,6 @@ namespace System.Windows.Controls
                     {
                         var oldIndex = generator.IndexFromGeneratorPosition(args.Position);
                         var oldItems = new ArrayList(args.ItemCount);
-
                         // Since we can't actually get the old items directly, and sometimes we can't even get the old index from the generator, we'll get as many as we can from the visuals.
                         for (int i = 0; i < args.ItemUICount; i++)
                         {
@@ -338,7 +337,11 @@ namespace System.Windows.Controls
                             RemoveInternalChildRange(args.Position.Index, args.ItemUICount);
                             
                         }
-                        OnItemsChanged(items, new NotifyCollectionChangedEventArgs(action, oldItems, oldIndex));
+                        // HACK ($$$) - the position generating logic is returning the wrong position
+                        // the position generated for the last item is beyond the bounds of the collection
+                        // causing "RemoveRange" to fail 
+                        int indexToRemove = (oldIndex > args.Position.Index) ? args.Position.Index : oldIndex;
+                        OnItemsChanged(items, new NotifyCollectionChangedEventArgs(action, oldItems, indexToRemove));
                     }
                     else if (action == NotifyCollectionChangedAction.Move)
                     {
