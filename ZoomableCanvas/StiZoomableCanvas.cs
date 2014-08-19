@@ -21,9 +21,9 @@ namespace System.Windows.Controls
         #region BoxProperty
         public static readonly DependencyProperty BoxProperty = DependencyProperty.Register("Box", typeof(Rect), typeof(StiZoomableCanvas),
                                                             new FrameworkPropertyMetadata(Rect.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnBoxChanged), IsBoxValid);
-        public double Box
+        public Rect Box
         {
-            get { return (double)GetValue(BoxProperty); }
+            get { return (Rect)GetValue(BoxProperty); }
             set { SetValue(BoxProperty, value); }
         }
         private static bool IsBoxValid(object value)
@@ -900,11 +900,9 @@ namespace System.Windows.Controls
                         _items[i].Index = i - count;
                     }
                 }
-                // HACK ($$$) - the position generating logic is returning the wrong position
-                // the position generated for the last item is beyond the bounds of the collection
-                // causing "RemoveRange" to fail 
-                int indexToRemove = (index > _items.Count) ? _items.Count - 1 : index;
-                _items.RemoveRange(indexToRemove, count);
+                // $$$ this is where the problems are caused when there is an index out of range. It has a 
+                // slightly hack-ish fix in Virtual Panel (line 339)
+                _items.RemoveRange(index, count);
                 _extent = Rect.Empty;
 
                 if (ExtentChanged != null)
