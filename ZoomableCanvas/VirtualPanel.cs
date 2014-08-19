@@ -327,6 +327,7 @@ namespace System.Windows.Controls
                             if (oldIndex == -1)
                             {
                                 oldIndex = (int)element.ReadLocalValue(IndexForItemContainerProperty);
+
                             }
                             element.ClearValue(IndexForItemContainerProperty);
                         }
@@ -335,8 +336,8 @@ namespace System.Windows.Controls
                         if (args.ItemUICount > 0)
                         {
                             RemoveInternalChildRange(args.Position.Index, args.ItemUICount);
+                            
                         }
-
                         OnItemsChanged(items, new NotifyCollectionChangedEventArgs(action, oldItems, oldIndex));
                     }
                     else if (action == NotifyCollectionChangedAction.Move)
